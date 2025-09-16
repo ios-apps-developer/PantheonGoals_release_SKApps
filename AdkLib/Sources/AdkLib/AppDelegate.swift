@@ -16,7 +16,7 @@ public class AppDelegate: NSObject, UIApplicationDelegate, AppsFlyerLibDelegate 
         return orientationMask
     }
     
-    public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+    open func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         print("🚀 Starting application launch")
         AppDelegate.shared = self
         
