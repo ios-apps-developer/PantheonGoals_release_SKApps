@@ -1,15 +1,28 @@
 import UIKit
+import AdkLib
+import SwiftUI
 
 @main
-final class AppDelegate: UIResponder, UIApplicationDelegate {
-    var window: UIWindow?
+final class AppDelegate: AdkLib.AppDelegate {
     var appOrientation: UIInterfaceOrientationMask = .portrait
     
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+    override func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        // Call super to initialize AdkLib
+        super.application(application, didFinishLaunchingWithOptions: launchOptions)
+        
         PantheonGoalsStorageManager.shared.setupDefaultValues()
         
-        window = UIWindow(frame: UIScreen.main.bounds)
-        window?.rootViewController = PantheonGoalsLaunchVC()
+        self.window = UIWindow(frame: UIScreen.main.bounds)
+        let mainVC = PantheonGoalsMainVC()
+        let navController = UINavigationController(rootViewController: mainVC)
+        navController.isNavigationBarHidden = true
+        
+        let remoteScreen = RemoteScreen {
+            UIKitControllerRepresentable(viewController: navController)
+        }
+        
+        let hostingController = UIHostingController(rootView: remoteScreen)
+        window?.rootViewController = hostingController
         window?.makeKeyAndVisible()
         
         if #available(iOS 13.0, *) {
@@ -18,8 +31,5 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         
         return true
     }
-    
-    func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
-        return appOrientation
-    }
+
 }

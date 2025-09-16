@@ -7,6 +7,7 @@ import AppTrackingTransparency
 
 public class AppDelegate: NSObject, UIApplicationDelegate, AppsFlyerLibDelegate {
     public static var shared: AppDelegate?
+    public var window: UIWindow?
     public var orientationMask: UIInterfaceOrientationMask = .portrait
     public var onParamsArrived: (() -> Void)?
     private var appStatus = UserDefaults.standard.integer(forKey: AppConfig.Keys.appStatus)
@@ -47,7 +48,8 @@ public class AppDelegate: NSObject, UIApplicationDelegate, AppsFlyerLibDelegate 
             UserDefaults.standard.set(2, forKey: AppConfig.Keys.appStatus)
             self.appStatus = 2
         }
-        
+        self.window = UIWindow(frame: UIScreen.main.bounds)
+
         setupOneSignal(launchOptions: launchOptions)
         setupAppsFlyer()
         requestTrackingPermission(launchOptions)
