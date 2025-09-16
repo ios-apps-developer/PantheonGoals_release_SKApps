@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "rewardTwo.png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
