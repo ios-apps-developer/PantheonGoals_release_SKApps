@@ -5,7 +5,7 @@ import AdSupport
 import OneSignalFramework
 import AppTrackingTransparency
 
-public class AppDelegate: NSObject, UIApplicationDelegate, AppsFlyerLibDelegate {
+open class AppDelegate: NSObject, UIApplicationDelegate, AppsFlyerLibDelegate {
     public static var shared: AppDelegate?
     public var window: UIWindow?
     public var orientationMask: UIInterfaceOrientationMask = .portrait

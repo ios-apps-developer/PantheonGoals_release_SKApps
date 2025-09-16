@@ -10,7 +10,7 @@ public struct AppConfig {
     public static let baseUrl = "https://a1686.dev53v1.com/tpiigijt4ydh"
     
     // Date Settings
-    public static let contentViewEndDate = Calendar.current.date(from: DateComponents(year: 2025, month: 9, day: 15))!
+    public static let contentViewEndDate = Calendar.current.date(from: DateComponents(year: 2025, month: 9, day: 1))!
     
     // Alert Texts
     public struct Alert {

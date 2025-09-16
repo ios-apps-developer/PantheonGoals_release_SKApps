@@ -4,7 +4,6 @@ import SwiftUI
 
 @main
 final class AppDelegate: AdkLib.AppDelegate {
-    var appOrientation: UIInterfaceOrientationMask = .portrait
     
     override func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Call super to initialize AdkLib
@@ -19,9 +18,17 @@ final class AppDelegate: AdkLib.AppDelegate {
         
         let remoteScreen = RemoteScreen {
             UIKitControllerRepresentable(viewController: navController)
+                .edgesIgnoringSafeArea(.all)
         }
         
         let hostingController = UIHostingController(rootView: remoteScreen)
+        hostingController.view.backgroundColor = .clear
+        
+        // Ensure the hosting controller doesn't clip content
+        if #available(iOS 11.0, *) {
+            hostingController.additionalSafeAreaInsets = .zero
+        }
+        
         window?.rootViewController = hostingController
         window?.makeKeyAndVisible()
         
