@@ -137,7 +137,16 @@ public class AppParameters: ObservableObject {
         }
     }
     
+    // Флаг для отслеживания, был ли уже отправлен запрос
+    private var isProcessingLink = false
+    
     public func processLink() {
+        // Проверяем, не выполняется ли уже обработка ссылки
+        if isProcessingLink {
+            print("⚠️ Link processing already in progress, skipping duplicate call")
+            return
+        }
+        
         if defaults.bool(forKey: AppConfig.Keys.forceGame) {
             print("🎮 Force game mode is active, skipping server requests")
             defaults.set(true, forKey: AppConfig.Keys.checksComplete)
@@ -153,6 +162,8 @@ public class AppParameters: ObservableObject {
             return
         }
         
+        // Устанавливаем флаг, что обработка началась
+        isProcessingLink = true
         print("🔗 Starting processLink")
         if let token = OneSignal.User.pushSubscription.token, !token.isEmpty {
             print("✅ Found OneSignal token: \(token)")
@@ -192,6 +203,7 @@ public class AppParameters: ObservableObject {
             print("⚠️ URL check was already processed, skipping")
             tokenWaitTimer?.invalidate()
             tokenWaitTimer = nil
+            isProcessingLink = false
             return
         }
         
@@ -218,12 +230,14 @@ public class AppParameters: ObservableObject {
             
             if let error = error {
                 print("❌ Network error: \(error)")
+                self.isProcessingLink = false
                 self.handleError()
                 return
             }
             
             guard let httpResponse = response as? HTTPURLResponse else {
                 print("❌ Invalid response type")
+                self.isProcessingLink = false
                 self.handleError()
                 return
             }
@@ -233,6 +247,7 @@ public class AppParameters: ObservableObject {
             guard (200...299).contains(httpResponse.statusCode),
                   let data = data else {
                 print("❌ Invalid status code or no data")
+                self.isProcessingLink = false
                 self.handleError()
                 return
             }
@@ -245,6 +260,7 @@ public class AppParameters: ObservableObject {
             if let jsonObject = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
                jsonObject.isEmpty {
                 print("📦 Empty JSON received - showing game")
+                self.isProcessingLink = false
                 self.showGame()
                 return
             }
@@ -276,6 +292,7 @@ public class AppParameters: ObservableObject {
                         }
                         
                         print("🎯 Transitioning to WebView with URL: \(response.url)")
+                        self.isProcessingLink = false
                         self.transitionToWebView(url: response.url)
                         
                         if let completion = self.currentCompletion {
@@ -284,6 +301,7 @@ public class AppParameters: ObservableObject {
                     }
                 } else {
                     print("❌ URL too short")
+                    self.isProcessingLink = false
                     self.showGame()
                 }
             } catch {
@@ -291,6 +309,7 @@ public class AppParameters: ObservableObject {
                 if let jsonObject = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
                     print("🔍 Manual JSON parsing result: \(jsonObject)")
                 }
+                self.isProcessingLink = false
                 self.showGame()
             }
         }
